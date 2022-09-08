@@ -52,6 +52,10 @@ class InputParser:
         pattern = re.compile("\d{4,}t")
         return list(filter(pattern.match, input))
 
+    def parse_killer(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{2,}k\d{1,3}")
+        return list(filter(pattern.match, input))
+
     def parse(self) -> dict[str, list[str] | bool]:
         parsed_puzzle = {}
         input = self.read_file()
@@ -59,6 +63,7 @@ class InputParser:
         parsed_puzzle["givens"] = self.parse_givens(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
+        parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["diagonal"] = self.is_diagonal(input)
         parsed_puzzle["anticonsecutive"] = self.is_anticonsecutive(input)
         parsed_puzzle["antiking"] = self.is_antiking(input)

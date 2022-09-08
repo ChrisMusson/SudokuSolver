@@ -114,6 +114,26 @@ class SudokuModel(Model):
                             self += self.sol[i][j][k] + \
                                 self.sol[i + move[0]][j + move[1]][k] <= 1
 
+    def add_killer_constraints(self) -> None:
+        killer = self.input["killer"]
+        if not killer:
+            return
+
+        for clue in killer:
+            region, s = clue.split("k")
+            region_cells = [(int(region[2*i]), int(region[2*i+1]))
+                            for i in range(len(region) // 2)]
+
+            # digits cannot repeat in region cells
+            for k in range(9):
+                self += xsum(self.sol[x[0] - 1][x[1] - 1][k]
+                             for x in region_cells) <= 1
+
+            # if a sum is given, ensure region cells add to that sum. Otherwise, continue
+            if int(s) != 0:
+                self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k]
+                             for x in region_cells) for k in range(9)) == int(s)
+
     def add_kropki_constraints(self) -> None:
         kropki = self.input["kropki"]
         if not kropki:
@@ -200,10 +220,11 @@ class SudokuModel(Model):
     def add_constraints(self):
         self.add_standard_constraints()
         self.add_given_constraints()
-        self.add_kropki_constraints()
-        self.add_thermo_constraints()
-        self.add_diagonal_constraints()
         self.add_anticonsecutive_constraints()
         self.add_antiking_constraints()
         self.add_antiknight_constraints()
+        self.add_diagonal_constraints()
+        self.add_killer_constraints()
+        self.add_kropki_constraints()
         self.add_neg_kropki_constraints()
+        self.add_thermo_constraints()
