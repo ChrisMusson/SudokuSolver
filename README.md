@@ -29,8 +29,10 @@ contain the same digit
 
 - Even/Odd - cells marked with a circle must be odd, cells marked with a square must be even
 
+- German Whispers - adjacent cells on a marked line must differ by at least 5
+
 ## How to Use
-You can see some valid examples of puzzles in the `puzzles/` folder. They all conform to the following rules
+Every variant described here has a valid example of a puzzle in the `puzzles/` folder.
 
 ### General Instructions
 
@@ -49,9 +51,11 @@ You can see some valid examples of puzzles in the `puzzles/` folder. They all co
 
 1. In Arrow puzzles, you need to enter a line to your puzzle file for every arrow. You do this by entering the circled cell, followed by all cells on the adjoining arrow, followed by an A. For example, a 3-cell L-shaped arrow that has the central cell as it's circle would read `55657576A`.
 
-1. In Palindrome puzzles, you need to enter a line to your puzzle file for every palindrome line. You do this by entering the cells on the line, starting from one end a traversing it to the other end, followed by a P. For example, a 5-cell staircase palindrome line could read `6667777888P`.
+1. In Palindrome puzzles, you need to enter a line to your puzzle file for every palindrome line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by a P. For example, a 5-cell staircase palindrome line could read `6667777888P`.
 
 1. In Even/Odd puzzles, you need to enter up to 2 lines to your puzzle file - one line for all even cells, followed by an E, and one line for all odd cells, followed by an O. For example, if the antidiagonal/trailing diagonal of the grid contains alternating odds and evens, the lines to add would read `9173553719O` and `82644628E`.
+
+1. In German Whispers puzzles, you need to enter a line to your puzzle file for every German whispers line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by GW. For example, a 10-cell P-shaped German whispers line could read `67685848474656667686GW`.
 
 ## To add
 
@@ -60,7 +64,6 @@ You can see some valid examples of puzzles in the `puzzles/` folder. They all co
 
 ### Possible Future Additions:
 
-- German Whispers
 - Renban
 - X-Sums
 - Windoku
