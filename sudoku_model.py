@@ -44,13 +44,93 @@ class SudokuModel(Model):
                 if char != ".":
                     self += self.sol[i][j][int(char) - 1] == 1
 
-    def add_diagonal_constraints(self) -> None:
-        # numbers 1-9 in both long diagonals
-        if not self.input["diagonal"]:
+    def add_arrow_constraints(self) -> None:
+        arrow = self.input["arrow"]
+        if not arrow:
             return
-        for k in range(9):
-            self += xsum(self.sol[i][i][k] for i in range(9)) == 1
-            self += xsum(self.sol[i][8 - i][k] for i in range(9)) == 1
+
+        for clue in arrow:
+            circle = (int(clue[0]), int(clue[1]))
+            others = [(int(clue[2*i]), int(clue[2*i+1]))
+                      for i in range(1, len(clue[2:-1]) // 2 + 1)]
+
+            # sum of all digits in others equals digit in circle
+            self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k] for x in others) for k in range(
+                9)) == xsum((k+1) * self.sol[circle[0] - 1][circle[1] - 1][k] for k in range(9))
+
+    def add_killer_constraints(self) -> None:
+        killer = self.input["killer"]
+        if not killer:
+            return
+
+        for clue in killer:
+            region, s = clue.split("k")
+            region_cells = [(int(region[2*i]), int(region[2*i+1]))
+                            for i in range(len(region) // 2)]
+
+            # digits cannot repeat in region cells
+            for k in range(9):
+                self += xsum(self.sol[x[0] - 1][x[1] - 1][k]
+                             for x in region_cells) <= 1
+
+            # if a sum is given, ensure region cells add to that sum. Otherwise, continue
+            if int(s) != 0:
+                self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k]
+                             for x in region_cells) for k in range(9)) == int(s)
+
+    def add_kropki_constraints(self) -> None:
+        kropki = self.input["kropki"]
+        if not kropki:
+            return
+
+        # all tuples (a, b) where a,b are in 1-9
+        all_pairs = [(x+1, y+1) for x in range(9) for y in range(9)]
+
+        # possible pairs of cell values for black dots (quotient of 2)
+        poss_b = [(i+1, j+1) for i in range(9)
+                  for j in range(9) if (i+1)/(j+1) == 2 or (j+1)/(i+1) == 2]
+        # possible pairs of cell values for white dots (difference of 1)
+        poss_w = [(i+1, j+1) for i in range(9)
+                  for j in range(9) if abs(i-j) == 1]
+
+        for rule in kropki:
+            # rule must always be 4 digits + b/w, as dictated by InputParser
+            cell1 = self.sol[int(rule[0]) - 1][int(rule[1]) - 1]
+            cell2 = self.sol[int(rule[2]) - 1][int(rule[3]) - 1]
+            colour = rule[4]
+
+            if colour == "w":
+                for pair in set(all_pairs) - set(poss_w):
+                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
+
+            if colour == "b":
+                for pair in set(all_pairs) - set(poss_b):
+                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
+
+    def add_thermo_constraints(self) -> None:
+        thermo = self.input["thermo"]
+        if not thermo:
+            return
+
+        # all tuples (a, b) where a,b are in 1-9
+        all_pairs = set([(x+1, y+1) for x in range(9) for y in range(9)])
+
+        # all tuples where the 2nd element is larger than the 1st
+        # can use this as thermo clues are given in increasing order
+        valid_pairs = set([(i, i+j) for i in range(1, 10)
+                          for j in range(1, 10-i)])
+
+        for clue in thermo:
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range(len(clue) // 2)]
+
+            for i in range(len(cells) - 1):
+                cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
+                cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
+                # iterate over invalid pairs for consecutive, increasing cells in a thermo
+                # only a maximum of one of the values in these pairs may correspond to the true value
+                for pair in all_pairs - valid_pairs:
+                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
 
     def add_anticonsecutive_constraints(self) -> None:
         # no cells containing consecutive digits orthogonally adjacent to each other
@@ -114,68 +194,13 @@ class SudokuModel(Model):
                             self += self.sol[i][j][k] + \
                                 self.sol[i + move[0]][j + move[1]][k] <= 1
 
-    def add_arrow_constraints(self) -> None:
-        arrow = self.input["arrow"]
-        if not arrow:
+    def add_diagonal_constraints(self) -> None:
+        # numbers 1-9 in both long diagonals
+        if not self.input["diagonal"]:
             return
-
-        for clue in arrow:
-            circle = (int(clue[0]), int(clue[1]))
-            others = [(int(clue[2*i]), int(clue[2*i+1]))
-                      for i in range(1, len(clue[2:-1]) // 2 + 1)]
-            print(circle, others)
-
-            self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k] for x in others) for k in range(
-                9)) == xsum((k+1) * self.sol[circle[0] - 1][circle[1] - 1][k] for k in range(9))
-
-    def add_killer_constraints(self) -> None:
-        killer = self.input["killer"]
-        if not killer:
-            return
-
-        for clue in killer:
-            region, s = clue.split("k")
-            region_cells = [(int(region[2*i]), int(region[2*i+1]))
-                            for i in range(len(region) // 2)]
-
-            # digits cannot repeat in region cells
-            for k in range(9):
-                self += xsum(self.sol[x[0] - 1][x[1] - 1][k]
-                             for x in region_cells) <= 1
-
-            # if a sum is given, ensure region cells add to that sum. Otherwise, continue
-            if int(s) != 0:
-                self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k]
-                             for x in region_cells) for k in range(9)) == int(s)
-
-    def add_kropki_constraints(self) -> None:
-        kropki = self.input["kropki"]
-        if not kropki:
-            return
-
-        # all tuples (a, b) where a,b are in 1-9
-        all_pairs = [(x+1, y+1) for x in range(9) for y in range(9)]
-
-        # possible pairs of cell values for black dots (quotient of 2)
-        poss_b = [(i+1, j+1) for i in range(9)
-                  for j in range(9) if (i+1)/(j+1) == 2 or (j+1)/(i+1) == 2]
-        # possible pairs of cell values for white dots (difference of 1)
-        poss_w = [(i+1, j+1) for i in range(9)
-                  for j in range(9) if abs(i-j) == 1]
-
-        for rule in kropki:
-            # rule must always be 4 digits + b/w, as dictated by InputParser
-            cell1 = self.sol[int(rule[0]) - 1][int(rule[1]) - 1]
-            cell2 = self.sol[int(rule[2]) - 1][int(rule[3]) - 1]
-            colour = rule[4]
-
-            if colour == "w":
-                for pair in set(all_pairs) - set(poss_w):
-                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
-
-            if colour == "b":
-                for pair in set(all_pairs) - set(poss_b):
-                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
+        for k in range(9):
+            self += xsum(self.sol[i][i][k] for i in range(9)) == 1
+            self += xsum(self.sol[i][8 - i][k] for i in range(9)) == 1
 
     def add_neg_kropki_constraints(self) -> None:
         neg_kropki = self.input["neg_kropki"]
@@ -206,40 +231,15 @@ class SudokuModel(Model):
                 # 1 of the values must be true in the intersection
                 self += cell1[poss[0] - 1] + cell2[poss[1] - 1] <= 1
 
-    def add_thermo_constraints(self) -> None:
-        thermo = self.input["thermo"]
-        if not thermo:
-            return
-
-        # all tuples (a, b) where a,b are in 1-9
-        all_pairs = set([(x+1, y+1) for x in range(9) for y in range(9)])
-
-        # all tuples where the 2nd element is larger than the 1st
-        # can use this as thermo clues are given in increasing order
-        valid_pairs = set([(i, i+j) for i in range(1, 10)
-                          for j in range(1, 10-i)])
-
-        for clue in thermo:
-            cells = [(int(clue[2*i]), int(clue[2*i+1]))
-                     for i in range(len(clue) // 2)]
-
-            for i in range(len(cells) - 1):
-                cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
-                cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
-                # iterate over invalid pairs for consecutive, increasing cells in a thermo
-                # only a maximum of one of the values in these pairs may correspond to the true value
-                for pair in all_pairs - valid_pairs:
-                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
-
     def add_constraints(self):
         self.add_standard_constraints()
         self.add_given_constraints()
+        self.add_arrow_constraints()
+        self.add_killer_constraints()
+        self.add_kropki_constraints()
+        self.add_thermo_constraints()
         self.add_anticonsecutive_constraints()
         self.add_antiking_constraints()
         self.add_antiknight_constraints()
         self.add_diagonal_constraints()
-        self.add_arrow_constraints()
-        self.add_killer_constraints()
-        self.add_kropki_constraints()
         self.add_neg_kropki_constraints()
-        self.add_thermo_constraints()

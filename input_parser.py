@@ -19,10 +19,21 @@ class InputParser:
                 f"There are not exactly 9 valid rows in {self.filename}")
         return valid
 
-    def is_diagonal(self, input: list[str]) -> bool:
-        pattern = re.compile("diagonal:?.*true")
-        valid = list(filter(pattern.match, input))
-        return len(valid) > 0
+    def parse_arrow(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{4,}a")
+        return list(filter(pattern.match, input))
+
+    def parse_killer(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{2,}k\d{1,3}")
+        return list(filter(pattern.match, input))
+
+    def parse_kropki(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{4}[bw]")
+        return list(filter(pattern.match, input))
+
+    def parse_thermo(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{4,}t")
+        return list(filter(pattern.match, input))
 
     def is_anticonsecutive(self, input: list[str]) -> bool:
         pattern = re.compile("anti-?consecutive:?.*true")
@@ -39,26 +50,15 @@ class InputParser:
         valid = list(filter(pattern.match, input))
         return len(valid) > 0
 
-    def parse_arrow(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}a")
-        return list(filter(pattern.match, input))
-
-    def parse_kropki(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4}[bw]")
-        return list(filter(pattern.match, input))
+    def is_diagonal(self, input: list[str]) -> bool:
+        pattern = re.compile("diagonal:?.*true")
+        valid = list(filter(pattern.match, input))
+        return len(valid) > 0
 
     def is_negative_kropki(self, input: list[str]) -> bool:
         pattern = re.compile("neg(ative)?-?\s?_kropki:?.*true")
         valid = list(filter(pattern.match, input))
         return len(valid) > 0
-
-    def parse_thermo(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}t")
-        return list(filter(pattern.match, input))
-
-    def parse_killer(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{2,}k\d{1,3}")
-        return list(filter(pattern.match, input))
 
     def parse(self) -> dict[str, list[str] | bool]:
         parsed_puzzle = {}
@@ -66,13 +66,14 @@ class InputParser:
 
         parsed_puzzle["givens"] = self.parse_givens(input)
         parsed_puzzle["arrow"] = self.parse_arrow(input)
+        parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
-        parsed_puzzle["killer"] = self.parse_killer(input)
-        parsed_puzzle["diagonal"] = self.is_diagonal(input)
+
         parsed_puzzle["anticonsecutive"] = self.is_anticonsecutive(input)
         parsed_puzzle["antiking"] = self.is_antiking(input)
         parsed_puzzle["antiknight"] = self.is_antiknight(input)
+        parsed_puzzle["diagonal"] = self.is_diagonal(input)
         parsed_puzzle["neg_kropki"] = self.is_negative_kropki(input)
 
         return parsed_puzzle
