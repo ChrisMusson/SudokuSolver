@@ -107,6 +107,21 @@ class SudokuModel(Model):
                 for pair in set(all_pairs) - set(poss_b):
                     self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
 
+    def add_palindrome_constraints(self) -> None:
+        palindrome = self.input["palindrome"]
+        if not palindrome:
+            return
+        for clue in palindrome:
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range(len(clue) // 2)]
+            for i in range(len(cells) // 2):
+                # take the ith and (n-i)th cells from the list of cells
+                cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
+                cell2 = self.sol[cells[-i-1][0] - 1][cells[-i-1][1] - 1]
+                # set them equal to each other
+                for k in range(9):
+                    self += cell1[k] == cell2[k]
+
     def add_thermo_constraints(self) -> None:
         thermo = self.input["thermo"]
         if not thermo:
@@ -237,7 +252,9 @@ class SudokuModel(Model):
         self.add_arrow_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
+        self.add_palindrome_constraints()
         self.add_thermo_constraints()
+
         self.add_anticonsecutive_constraints()
         self.add_antiking_constraints()
         self.add_antiknight_constraints()

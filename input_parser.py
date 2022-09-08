@@ -31,6 +31,10 @@ class InputParser:
         pattern = re.compile("\d{4}[bw]")
         return list(filter(pattern.match, input))
 
+    def parse_palindrome(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{4,}p")
+        return list(filter(pattern.match, input))
+
     def parse_thermo(self, input: list[str]) -> list[str]:
         pattern = re.compile("\d{4,}t")
         return list(filter(pattern.match, input))
@@ -68,6 +72,7 @@ class InputParser:
         parsed_puzzle["arrow"] = self.parse_arrow(input)
         parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
+        parsed_puzzle["palindrome"] = self.parse_palindrome(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
 
         parsed_puzzle["anticonsecutive"] = self.is_anticonsecutive(input)
