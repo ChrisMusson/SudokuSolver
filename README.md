@@ -21,6 +21,8 @@ contain the same digit
 
 - Thermo - cells on thermometers must increase in value, starting from the 'bulb' end
 
+- Killer - cells in marked regions must not contain repeated digits, and must sum to the total given
+
 ## How to Use
 You can see some valid examples of puzzles in the `puzzles/` folder. They all conform to the following rules
 
@@ -37,10 +39,11 @@ You can see some valid examples of puzzles in the `puzzles/` folder. They all co
 
 1. In Thermo puzzles, you need to enter a line to your puzzle file for every thermometer. You do this by entering all cells that are on the thermometer starting from the bulb end, followed by a T. For example, a C-shaped thermometer of length 4 starting in the central cell would read `55546465T`.
 
+1. In Killer puzzles, you need to enter a line to your puzzle file for every region. You do this by entering all cells that are in a region, followed by a K, followed by their sum. If the sum is not given, set the sum to 0. For example, an L-shaped region of size 5 in the central 3x3 box that sums to 26 would read `4454646566K26`.
+
 ## To add
 
 - XV (with negative XV constraint)
-- Killer
 - Arrow
 - Odd/Even
 - Palindrome
