@@ -27,6 +27,8 @@ contain the same digit
 
 - Palindrome - cells on marked lines must read the same from both directions
 
+- Even/Odd - cells marked with a circle must be odd, cells marked with a square must be even
+
 ## How to Use
 You can see some valid examples of puzzles in the `puzzles/` folder. They all conform to the following rules
 
@@ -49,10 +51,11 @@ You can see some valid examples of puzzles in the `puzzles/` folder. They all co
 
 1. In Palindrome puzzles, you need to enter a line to your puzzle file for every palindrome line. You do this by entering the cells on the line, starting from one end a traversing it to the other end, followed by a P. For example, a 5-cell staircase palindrome line could read `6667777888P`.
 
+1. In Even/Odd puzzles, you need to enter up to 2 lines to your puzzle file - one line for all even cells, followed by an E, and one line for all odd cells, followed by an O. For example, if the antidiagonal/trailing diagonal of the grid contains alternating odds and evens, the lines to add would read `9173553719O` and `82644628E`.
+
 ## To add
 
 - XV (with negative XV constraint)
-- Odd/Even
 - Fortress
 
 ### Possible Future Additions:
