@@ -23,6 +23,8 @@ contain the same digit
 
 - Killer - cells in marked regions must not contain repeated digits, and must sum to the total given
 
+- Arrow - digits placed in circled cells must be the sum of the cells on the adjoining arrows
+
 ## How to Use
 You can see some valid examples of puzzles in the `puzzles/` folder. They all conform to the following rules
 
@@ -41,10 +43,11 @@ You can see some valid examples of puzzles in the `puzzles/` folder. They all co
 
 1. In Killer puzzles, you need to enter a line to your puzzle file for every region. You do this by entering all cells that are in a region, followed by a K, followed by their sum. If the sum is not given, set the sum to 0. For example, an L-shaped region of size 5 in the central 3x3 box that sums to 26 would read `4454646566K26`.
 
+1. In Arrow puzzles, you need to enter a line to your puzzle file for every arrow. You do this by entering the circled cell, followed by all cells on the adjoining arrow, followed by an A. For example, a 3-cell L-shaped arrow that has the central cell as it's circle would read `55657576A`.
+
 ## To add
 
 - XV (with negative XV constraint)
-- Arrow
 - Odd/Even
 - Palindrome
 - Fortress
