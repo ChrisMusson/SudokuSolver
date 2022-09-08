@@ -114,6 +114,20 @@ class SudokuModel(Model):
                             self += self.sol[i][j][k] + \
                                 self.sol[i + move[0]][j + move[1]][k] <= 1
 
+    def add_arrow_constraints(self) -> None:
+        arrow = self.input["arrow"]
+        if not arrow:
+            return
+
+        for clue in arrow:
+            circle = (int(clue[0]), int(clue[1]))
+            others = [(int(clue[2*i]), int(clue[2*i+1]))
+                      for i in range(1, len(clue[2:-1]) // 2 + 1)]
+            print(circle, others)
+
+            self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k] for x in others) for k in range(
+                9)) == xsum((k+1) * self.sol[circle[0] - 1][circle[1] - 1][k] for k in range(9))
+
     def add_killer_constraints(self) -> None:
         killer = self.input["killer"]
         if not killer:
@@ -224,6 +238,7 @@ class SudokuModel(Model):
         self.add_antiking_constraints()
         self.add_antiknight_constraints()
         self.add_diagonal_constraints()
+        self.add_arrow_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
         self.add_neg_kropki_constraints()

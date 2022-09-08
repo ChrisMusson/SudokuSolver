@@ -39,6 +39,10 @@ class InputParser:
         valid = list(filter(pattern.match, input))
         return len(valid) > 0
 
+    def parse_arrow(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{4,}a")
+        return list(filter(pattern.match, input))
+
     def parse_kropki(self, input: list[str]) -> list[str]:
         pattern = re.compile("\d{4}[bw]")
         return list(filter(pattern.match, input))
@@ -61,6 +65,7 @@ class InputParser:
         input = self.read_file()
 
         parsed_puzzle["givens"] = self.parse_givens(input)
+        parsed_puzzle["arrow"] = self.parse_arrow(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
         parsed_puzzle["killer"] = self.parse_killer(input)
