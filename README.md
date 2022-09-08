@@ -25,6 +25,8 @@ contain the same digit
 
 - Arrow - digits placed in circled cells must be the sum of the cells on the adjoining arrows
 
+- Palindrome - cells on marked lines must read the same from both directions
+
 ## How to Use
 You can see some valid examples of puzzles in the `puzzles/` folder. They all conform to the following rules
 
@@ -45,11 +47,12 @@ You can see some valid examples of puzzles in the `puzzles/` folder. They all co
 
 1. In Arrow puzzles, you need to enter a line to your puzzle file for every arrow. You do this by entering the circled cell, followed by all cells on the adjoining arrow, followed by an A. For example, a 3-cell L-shaped arrow that has the central cell as it's circle would read `55657576A`.
 
+1. In Palindrome puzzles, you need to enter a line to your puzzle file for every palindrome line. You do this by entering the cells on the line, starting from one end a traversing it to the other end, followed by a P. For example, a 5-cell staircase palindrome line could read `6667777888P`.
+
 ## To add
 
 - XV (with negative XV constraint)
 - Odd/Even
-- Palindrome
 - Fortress
 
 ### Possible Future Additions:
