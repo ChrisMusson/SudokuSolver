@@ -107,6 +107,25 @@ class SudokuModel(Model):
                 for pair in set(all_pairs) - set(poss_b):
                     self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
 
+    def add_even_odd_constraints(self) -> None:
+        even_odd = self.input["even_odd"]
+        if not even_odd:
+            return
+        for clue in even_odd:
+            cells, oe = [(int(clue[2*i]), int(clue[2*i+1]))
+                         for i in range(len(clue) // 2)], clue[-1]
+
+            if oe == "e":
+                for cell in cells:
+                    sol_cell = self.sol[cell[0]-1][cell[1]-1]
+                    # index 1,3,5,7 == value 2,4,6,8
+                    self += xsum(sol_cell[k] for k in [1, 3, 5, 7]) == 1
+            if oe == "o":
+                for cell in cells:
+                    sol_cell = self.sol[cell[0]-1][cell[1]-1]
+                    # index 0,2,4,6,8 == value 1,3,5,7,9
+                    self += xsum(sol_cell[k] for k in [0, 2, 4, 6, 8]) == 1
+
     def add_palindrome_constraints(self) -> None:
         palindrome = self.input["palindrome"]
         if not palindrome:
@@ -252,6 +271,7 @@ class SudokuModel(Model):
         self.add_arrow_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
+        self.add_even_odd_constraints()
         self.add_palindrome_constraints()
         self.add_thermo_constraints()
 

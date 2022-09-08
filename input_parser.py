@@ -31,6 +31,10 @@ class InputParser:
         pattern = re.compile("\d{4}[bw]")
         return list(filter(pattern.match, input))
 
+    def parse_even_odd(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{2,}[oe]")
+        return list(filter(pattern.match, input))
+
     def parse_palindrome(self, input: list[str]) -> list[str]:
         pattern = re.compile("\d{4,}p")
         return list(filter(pattern.match, input))
@@ -72,6 +76,7 @@ class InputParser:
         parsed_puzzle["arrow"] = self.parse_arrow(input)
         parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
+        parsed_puzzle["even_odd"] = self.parse_even_odd(input)
         parsed_puzzle["palindrome"] = self.parse_palindrome(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
 
