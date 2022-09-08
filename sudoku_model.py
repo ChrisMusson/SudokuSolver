@@ -77,6 +77,29 @@ class SudokuModel(Model):
                     # index 0,2,4,6,8 == value 1,3,5,7,9
                     self += xsum(sol_cell[k] for k in [0, 2, 4, 6, 8]) == 1
 
+    def add_german_whispers_constraints(self) -> None:
+        german_whispers = self.input["german_whispers"]
+        if not german_whispers:
+            return
+
+        all_pairs = [(x+1, y+1) for x in range(9) for y in range(9)]
+
+        valid_pairs = [(x+1, y+1) for x in range(9)
+                       for y in range(9) if abs(x-y) >= 5]
+
+        for clue in german_whispers:
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range((len(clue) - 2) // 2)]
+            # take off 1 because looking ahead along the german whisper line
+            for i in range(len(cells) - 1):
+                cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
+                cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
+
+                # iterate through invalid pairs for a german whisper
+                # only a maximum of one of the values in these pairs may correspond to the true value
+                for pair in set(all_pairs) - set(valid_pairs):
+                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
+
     def add_killer_constraints(self) -> None:
         killer = self.input["killer"]
         if not killer:
@@ -270,6 +293,7 @@ class SudokuModel(Model):
         self.add_given_constraints()
         self.add_arrow_constraints()
         self.add_even_odd_constraints()
+        self.add_german_whispers_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
         self.add_palindrome_constraints()

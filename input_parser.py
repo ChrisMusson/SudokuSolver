@@ -27,6 +27,10 @@ class InputParser:
         pattern = re.compile("\d{2,}[oe]")
         return list(filter(pattern.match, input))
 
+    def parse_german_whispers(self, input: list[str]) -> list[str]:
+        pattern = re.compile("\d{4,}gw")
+        return list(filter(pattern.match, input))
+
     def parse_killer(self, input: list[str]) -> list[str]:
         pattern = re.compile("\d{2,}k\d{1,3}")
         return list(filter(pattern.match, input))
@@ -75,6 +79,7 @@ class InputParser:
         parsed_puzzle["givens"] = self.parse_givens(input)
         parsed_puzzle["arrow"] = self.parse_arrow(input)
         parsed_puzzle["even_odd"] = self.parse_even_odd(input)
+        parsed_puzzle["german_whispers"] = self.parse_german_whispers(input)
         parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
         parsed_puzzle["palindrome"] = self.parse_palindrome(input)
