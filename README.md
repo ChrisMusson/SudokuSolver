@@ -31,6 +31,8 @@ contain the same digit
 
 - German Whispers - adjacent cells on a marked line must differ by at least 5
 
+- Entropic - each set of 3 consecutive cells on marked lines must contain one low digit (1, 2, 3), one medium digit (4, 5, 6), and one high digit (7, 8, 9).
+
 ## How to Use
 Every variant described here has a valid example of a puzzle in the `puzzles/` folder.
 
@@ -56,6 +58,8 @@ Every variant described here has a valid example of a puzzle in the `puzzles/` f
 1. In Even/Odd puzzles, you need to enter up to 2 lines to your puzzle file - one line for all even cells, followed by an E, and one line for all odd cells, followed by an O. For example, if the antidiagonal/trailing diagonal of the grid contains alternating odds and evens, the lines to add would read `9173553719O` and `82644628E`.
 
 1. In German Whispers puzzles, you need to enter a line to your puzzle file for every German whispers line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by GW. For example, a 10-cell P-shaped German whispers line could read `67685848474656667686GW`.
+
+1. In Entropic puzzles, you need to enter a line to your puzzle file for every entropic line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by ENT. If the entropic line forms a closed loop, then you may start anywhere on the loop, but you must add the first two cells to the end of the line before ENT. For example, an 8-cell O-shaped loop in the top-left 3x3 box could read `11121323333231211112ENT`.
 
 ## To add
 
