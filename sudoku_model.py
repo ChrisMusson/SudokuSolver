@@ -213,6 +213,30 @@ class SudokuModel(Model):
                 for pair in all_pairs - valid_pairs:
                     self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
 
+    def add_xv_constraints(self) -> None:
+        xv = self.input["xv"]
+        if not xv:
+            return
+        all_pairs = [(x+1, y+1) for x in range(9) for y in range(9)]
+        poss_v = [(i+1, j+1) for i in range(9)
+                  for j in range(9) if i + j + 2 == 5]
+        poss_x = [(i+1, j+1) for i in range(9)
+                  for j in range(9) if i + j + 2 == 10]
+
+        for rule in xv:
+            # rule must always be 4 digits + b/w, as dictated by InputParser
+            cell1 = self.sol[int(rule[0]) - 1][int(rule[1]) - 1]
+            cell2 = self.sol[int(rule[2]) - 1][int(rule[3]) - 1]
+            colour = rule[4]
+
+            if colour == "v":
+                for pair in set(all_pairs) - set(poss_v):
+                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
+
+            if colour == "x":
+                for pair in set(all_pairs) - set(poss_x):
+                    self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
+
     def add_anticonsecutive_constraints(self) -> None:
         # no cells containing consecutive digits orthogonally adjacent to each other
         if not self.input["anticonsecutive"]:
@@ -312,6 +336,35 @@ class SudokuModel(Model):
                 # 1 of the values must be true in the intersection
                 self += cell1[poss[0] - 1] + cell2[poss[1] - 1] <= 1
 
+    def add_neg_xv_constraints(self) -> None:
+        neg_xv = self.input["neg_xv"]
+        if not neg_xv:
+            return
+
+        # need to find all intersections without any X or V
+        xv_intersections = [((int(x[0]), int(x[1])), (int(x[2]), int(x[3])))
+                            for x in self.input["xv"]]
+
+        all_intersections = [((i, j), (i+1, j)) for i in range(1, 9) for j in range(
+            1, 10)] + [((i, j), (i, j+1)) for i in range(1, 10) for j in range(1, 9)]
+
+        bare_intersections = set(all_intersections) - set(xv_intersections)
+
+        # possible pairs of cell values for V
+        poss_v = [(i+1, j+1) for i in range(9)
+                  for j in range(9) if i + j + 2 == 5]
+        # possible pairs of cell values for X
+        poss_x = [(i+1, j+1) for i in range(9)
+                  for j in range(9) if i + j + 2 == 10]
+
+        for inter in bare_intersections:
+            cell1 = self.sol[inter[0][0] - 1][inter[0][1] - 1]
+            cell2 = self.sol[inter[1][0] - 1][inter[1][1] - 1]
+            for poss in poss_v + poss_x:
+                # in the valid pairs for V + X, a maximum of
+                # 1 of the values must be true in the intersection
+                self += cell1[poss[0] - 1] + cell2[poss[1] - 1] <= 1
+
     def add_constraints(self):
         self.add_standard_constraints()
         self.add_given_constraints()
@@ -323,9 +376,11 @@ class SudokuModel(Model):
         self.add_kropki_constraints()
         self.add_palindrome_constraints()
         self.add_thermo_constraints()
+        self.add_xv_constraints()
 
         self.add_anticonsecutive_constraints()
         self.add_antiking_constraints()
         self.add_antiknight_constraints()
         self.add_diagonal_constraints()
         self.add_neg_kropki_constraints()
+        self.add_neg_xv_constraints()
