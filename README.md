@@ -33,6 +33,12 @@ contain the same digit
 
 - Entropic - each set of 3 consecutive cells on marked lines must contain one low digit (1, 2, 3), one medium digit (4, 5, 6), and one high digit (7, 8, 9).
 
+- XV - cells seperated by an X must sum to 10, while cells seperated by a V must sum to 5.
+
+  - Negative XV - cells without an X or V between them must sum to neither 10 nor 5.
+
+- Renban - cells in marked regions must contain consecutive, non-repeating digits in any order.
+
 ## How to Use
 Every variant described here has a valid example of a puzzle in the `puzzles/` folder.
 
@@ -61,14 +67,16 @@ Every variant described here has a valid example of a puzzle in the `puzzles/` f
 
 1. In Entropic puzzles, you need to enter a line to your puzzle file for every entropic line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by ENT. If the entropic line forms a closed loop, then you may start anywhere on the loop, but you must add the first two cells to the end of the line before ENT. For example, an 8-cell O-shaped loop in the top-left 3x3 box could read `11121323333231211112ENT`.
 
+1. In XV puzzles, you need to enter a line to your puzzle file for every X or V in the puzzle. For each X or V, enter the two cells that the X or V is between, followed by either X or V. For example, an X between the bottom left cell and the cell to its right would read `9192X`.
+
+1. In Renban puzzles, you need to enter a line to your puzzle file for every renban region. You do this by entering the cells in the region, followed by an R. For example, a renban region containing the central 5 cells of row 7 would read `7374757677R`.
+
 ## To add
 
-- XV (with negative XV constraint)
 - Fortress
 
 ### Possible Future Additions:
 
-- Renban
 - X-Sums
 - Windoku
 - Argyle
