@@ -47,6 +47,10 @@ class InputParser:
         pattern = re.compile("\d{4,}p")
         return list(filter(pattern.match, input))
 
+    def parse_renban(self, input: list[str]) -> list[str]:
+        pattern = re.compile("^\d{4,}r$")
+        return list(filter(pattern.match, input))
+
     def parse_thermo(self, input: list[str]) -> list[str]:
         pattern = re.compile("\d{4,}t")
         return list(filter(pattern.match, input))
@@ -97,6 +101,7 @@ class InputParser:
         parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
         parsed_puzzle["palindrome"] = self.parse_palindrome(input)
+        parsed_puzzle["renban"] = self.parse_renban(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
         parsed_puzzle["xv"] = self.parse_xv(input)
 

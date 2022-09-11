@@ -188,6 +188,31 @@ class SudokuModel(Model):
                 for k in range(9):
                     self += cell1[k] == cell2[k]
 
+    def add_renban_constraints(self) -> None:
+        renban = self.input["renban"]
+        if not renban:
+            return
+
+        for clue in renban:
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range(len(clue) // 2)]
+
+            # ensure that all pairs of cells in the renban group
+            # have a maximum difference of num cells - 1
+            for c1 in cells:
+                for c2 in cells:
+                    v1 = xsum(
+                        (k + 1) * self.sol[c1[0] - 1][c1[1] - 1][k] for k in range(9))
+                    v2 = xsum(
+                        (k + 1) * self.sol[c2[0] - 1][c2[1] - 1][k] for k in range(9))
+                    self += v1 - v2 <= len(cells) - 1
+                    self += v2 - v1 <= len(cells) - 1
+
+            # ensure that no digit is repeated in the renban group
+            for k in range(9):
+                self += xsum(self.sol[c[0] - 1][c[1] - 1][k]
+                             for c in cells) <= 1
+
     def add_thermo_constraints(self) -> None:
         thermo = self.input["thermo"]
         if not thermo:
@@ -375,6 +400,7 @@ class SudokuModel(Model):
         self.add_killer_constraints()
         self.add_kropki_constraints()
         self.add_palindrome_constraints()
+        self.add_renban_constraints()
         self.add_thermo_constraints()
         self.add_xv_constraints()
 
