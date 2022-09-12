@@ -101,6 +101,19 @@ class SudokuModel(Model):
                     # index 0,2,4,6,8 == value 1,3,5,7,9
                     self += xsum(sol_cell[k] for k in [0, 2, 4, 6, 8]) == 1
 
+    def add_extra_regions_constraints(self) -> None:
+        extra_regions = self.input["extra_regions"]
+        if not extra_regions:
+            return
+
+        for region in extra_regions:
+            region_cells = [(int(region[2*i]), int(region[2*i+1]))
+                            for i in range((len(region) - 2) // 2)]
+
+            for k in range(9):
+                self += xsum(self.sol[x[0] - 1][x[1] - 1][k]
+                             for x in region_cells) == 1
+
     def add_german_whispers_constraints(self) -> None:
         german_whispers = self.input["german_whispers"]
         if not german_whispers:
@@ -396,6 +409,7 @@ class SudokuModel(Model):
         self.add_arrow_constraints()
         self.add_entropic_constraints()
         self.add_even_odd_constraints()
+        self.add_extra_regions_constraints()
         self.add_german_whispers_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
