@@ -39,6 +39,8 @@ contain the same digit
 
 - Renban - cells in marked regions must contain consecutive, non-repeating digits in any order.
 
+- Extra Regions - cells in marked regions must contain the digits 1-9 exactly once.
+
 ## How to Use
 Every variant described here has a valid example of a puzzle in the `puzzles/` folder.
 
@@ -70,6 +72,8 @@ Every variant described here has a valid example of a puzzle in the `puzzles/` f
 1. In XV puzzles, you need to enter a line to your puzzle file for every X or V in the puzzle. For each X or V, enter the two cells that the X or V is between, followed by either X or V. For example, an X between the bottom left cell and the cell to its right would read `9192X`.
 
 1. In Renban puzzles, you need to enter a line to your puzzle file for every renban region. You do this by entering the cells in the region, followed by an R. For example, a renban region containing the central 5 cells of row 7 would read `7374757677R`.
+
+1. In Extra Regions puzzles, you need to enter a line to your puzzle file for every extra region. You do this by entering the cells in the region, followed by ER. For example, an L-shaped extra region starting at (4, 2) and ending at (8, 6) would read `4252627282838485ER`.
 
 ## To add
 
