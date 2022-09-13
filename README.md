@@ -43,6 +43,8 @@ contain the same digit
 
 - Quadruple - cells surrounding a clue must contain the given digits in that clue.
 
+- Region Sum Lines - digits on region sum lines have an equal sum N within each box it passes through. If a line passes through the same box more than once, each individual segment of such a line within that box sums to N separately. 
+
 ## How to Use
 Every variant described here has a valid example of a puzzle in the `puzzles/` folder.
 
@@ -78,6 +80,8 @@ Every variant described here has a valid example of a puzzle in the `puzzles/` f
 1. In Extra Regions puzzles, you need to enter a line to your puzzle file for every extra region. You do this by entering the cells in the region, followed by ER. For example, an L-shaped extra region starting at (4, 2) and ending at (8, 6) would read `4252627282838485ER`.
 
 1. In Quadruple puzzles, you need to enter a line to your puzzle file for every quadruple clue. You do this by entering the top left cell surrounding the quadruple clue, followed by the given digits, followed by Q. For example, a clue whose top left cell is (6, 3) and contains the digits 1224 would read `631223Q`.
+
+1. In Region Sum Lines puzzles, you need to enter a line to your puzzle file for every region sum line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by RSL. For example, an S-shaped region sum line could read `141323243433`.
 
 ## To add
 

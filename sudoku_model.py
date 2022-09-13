@@ -216,6 +216,40 @@ class SudokuModel(Model):
                 self += xsum(self.sol[x[0] - 1][x[1] - 1][d - 1]
                              for x in cells) == digits.count(d)
 
+    def add_region_sum_line_constraints(self) -> None:
+        region_sum_line = self.input["region_sum_lines"]
+        if not region_sum_line:
+            return
+
+        for clue in region_sum_line:
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range((len(clue) - 3) // 2)]
+
+            # separate groups of cells into each distinct region
+            separated = [[cells[0]]]
+            for i in range(len(cells) - 1):
+                c1 = cells[i]
+                c2 = cells[i + 1]
+
+                # check c1 and c2 are in the same 3x3 region
+                if (c1[0] - 1) // 3 == (c2[0] - 1) // 3 and (c1[1] - 1) // 3 == (c2[1] - 1) // 3:
+                    separated[-1].append(c2)
+                else:
+                    separated.append([c2])
+
+            # set all regions to have the same sum
+            # this turns out faster than just setting the sum of region1 to be equal to region 2, 2 to 3, etc.
+            for a in separated:
+                for b in separated:
+                    if a != b:
+                        sum_a = xsum(xsum(
+                            (k + 1) * self.sol[x[0] - 1][x[1] - 1][k] for k in range(9)) for x in a)
+
+                        sum_b = xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k]
+                                          for k in range(9)) for x in b)
+
+                        self += sum_a == sum_b
+
     def add_renban_constraints(self) -> None:
         renban = self.input["renban"]
         if not renban:
@@ -430,6 +464,7 @@ class SudokuModel(Model):
         self.add_kropki_constraints()
         self.add_palindrome_constraints()
         self.add_quadruple_constraints()
+        self.add_region_sum_line_constraints()
         self.add_renban_constraints()
         self.add_thermo_constraints()
         self.add_xv_constraints()
