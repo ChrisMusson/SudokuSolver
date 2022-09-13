@@ -201,6 +201,21 @@ class SudokuModel(Model):
                 for k in range(9):
                     self += cell1[k] == cell2[k]
 
+    def add_quadruple_constraints(self) -> None:
+        quadruple = self.input["quadruple"]
+        if not quadruple:
+            return
+
+        for q in quadruple:
+            row = int(q[0])
+            col = int(q[1])
+            cells = [(row, col), (row, col + 1),
+                     (row + 1, col), (row + 1, col + 1)]
+            digits = [int(x) for x in q[2:-1]]
+            for d in set(digits):
+                self += xsum(self.sol[x[0] - 1][x[1] - 1][d - 1]
+                             for x in cells) == digits.count(d)
+
     def add_renban_constraints(self) -> None:
         renban = self.input["renban"]
         if not renban:
@@ -414,6 +429,7 @@ class SudokuModel(Model):
         self.add_killer_constraints()
         self.add_kropki_constraints()
         self.add_palindrome_constraints()
+        self.add_quadruple_constraints()
         self.add_renban_constraints()
         self.add_thermo_constraints()
         self.add_xv_constraints()
