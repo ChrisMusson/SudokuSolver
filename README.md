@@ -81,7 +81,7 @@ Every variant described here has a valid example of a puzzle in the `puzzles/` f
 
 1. In Quadruple puzzles, you need to enter a line to your puzzle file for every quadruple clue. You do this by entering the top left cell surrounding the quadruple clue, followed by the given digits, followed by Q. For example, a clue whose top left cell is (6, 3) and contains the digits 1224 would read `631223Q`.
 
-1. In Region Sum Lines puzzles, you need to enter a line to your puzzle file for every region sum line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by RSL. For example, an S-shaped region sum line could read `141323243433`.
+1. In Region Sum Lines puzzles, you need to enter a line to your puzzle file for every region sum line. You do this by entering the cells on the line, starting from one end and traversing it to the other end, followed by RSL. For example, an S-shaped region sum line could read `141323243433RSL`.
 
 ## To add
 
