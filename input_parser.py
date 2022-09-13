@@ -20,11 +20,11 @@ class InputParser:
         return valid
 
     def parse_arrow(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}a")
+        pattern = re.compile("^\d{4,}a$")
         return list(filter(pattern.match, input))
 
     def parse_entropic(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}ent")
+        pattern = re.compile("^\d{4,}ent$")
         return list(filter(pattern.match, input))
 
     def parse_even_odd(self, input: list[str]) -> list[str]:
@@ -36,19 +36,19 @@ class InputParser:
         return list(filter(pattern.match, input))
 
     def parse_german_whispers(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}gw")
+        pattern = re.compile("^\d{4,}gw$")
         return list(filter(pattern.match, input))
 
     def parse_killer(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{2,}k\d{1,3}")
+        pattern = re.compile("^\d{2,}k\d{1,3}$")
         return list(filter(pattern.match, input))
 
     def parse_kropki(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4}[bw]")
+        pattern = re.compile("^\d{4}[bw]$")
         return list(filter(pattern.match, input))
 
     def parse_palindrome(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}p")
+        pattern = re.compile("^\d{4,}p$")
         return list(filter(pattern.match, input))
 
     def parse_quadruple(self, input: list[str]) -> list[str]:
@@ -60,7 +60,7 @@ class InputParser:
         return list(filter(pattern.match, input))
 
     def parse_thermo(self, input: list[str]) -> list[str]:
-        pattern = re.compile("\d{4,}t")
+        pattern = re.compile("^\d{4,}t$")
         return list(filter(pattern.match, input))
 
     def parse_xv(self, input: list[str]) -> list[str]:
@@ -111,6 +111,7 @@ class InputParser:
         parsed_puzzle["kropki"] = self.parse_kropki(input)
         parsed_puzzle["palindrome"] = self.parse_palindrome(input)
         parsed_puzzle["quadruple"] = self.parse_quadruple(input)
+
         parsed_puzzle["renban"] = self.parse_renban(input)
         parsed_puzzle["thermo"] = self.parse_thermo(input)
         parsed_puzzle["xv"] = self.parse_xv(input)
