@@ -41,6 +41,8 @@ contain the same digit
 
 - Extra Regions - cells in marked regions must contain the digits 1-9 exactly once.
 
+- Quadruple - cells surrounding a clue must contain the given digits in that clue.
+
 ## How to Use
 Every variant described here has a valid example of a puzzle in the `puzzles/` folder.
 
@@ -74,6 +76,8 @@ Every variant described here has a valid example of a puzzle in the `puzzles/` f
 1. In Renban puzzles, you need to enter a line to your puzzle file for every renban region. You do this by entering the cells in the region, followed by an R. For example, a renban region containing the central 5 cells of row 7 would read `7374757677R`.
 
 1. In Extra Regions puzzles, you need to enter a line to your puzzle file for every extra region. You do this by entering the cells in the region, followed by ER. For example, an L-shaped extra region starting at (4, 2) and ending at (8, 6) would read `4252627282838485ER`.
+
+1. In Quadruple puzzles, you need to enter a line to your puzzle file for every quadruple clue. You do this by entering the top left cell surrounding the quadruple clue, followed by the given digits, followed by Q. For example, a clue whose top left cell is (6, 3) and contains the digits 1224 would read `631223Q`.
 
 ## To add
 
