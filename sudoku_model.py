@@ -142,6 +142,30 @@ class SudokuModel(Model):
                 self += xsum(self.sol[x[0] - 1][x[1] - 1][k]
                              for x in region_cells) == 1
 
+    def add_fortress_constraints(self) -> None:
+        fortress = self.input["fortress"]
+        if not fortress:
+            return
+
+        orthog_adjacent = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+        for clue in fortress:
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range((len(clue) - 4) // 2)]
+            for cell in cells:
+                print(cell)
+                cell_val = xsum((k + 1) * self.sol[cell[0] - 1]
+                                [cell[1] - 1][k] for k in range(9))
+                for adj in orthog_adjacent:
+                    new = (cell[0] + adj[0], cell[1] + adj[1])
+                    # ignore any other fortresses, as well as any cells out of bounds
+                    if new in cells or new[0] not in list(range(1, 10)) or new[1] not in list(range(1, 10)):
+                        continue
+                    print(f"Trying to say {cell} > {new}")
+
+                    new_val = xsum((k + 1) * self.sol[new[0] - 1]
+                                   [new[1] - 1][k] for k in range(9))
+                    self += cell_val - new_val >= 1
+
     def add_german_whispers_constraints(self) -> None:
         german_whispers = self.input["german_whispers"]
         if not german_whispers:
@@ -538,6 +562,7 @@ class SudokuModel(Model):
         self.add_entropic_constraints()
         self.add_even_odd_constraints()
         self.add_extra_regions_constraints()
+        self.add_fortress_constraints()
         self.add_german_whispers_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()

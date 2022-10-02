@@ -39,6 +39,10 @@ class InputParser:
         pattern = re.compile("^\d{2,}er$")
         return list(filter(pattern.match, input))
 
+    def parse_fortress(self, input: list[str]) -> list[str]:
+        pattern = re.compile("^\d{2,}fort$")
+        return list(filter(pattern.match, input))
+
     def parse_german_whispers(self, input: list[str]) -> list[str]:
         pattern = re.compile("^\d{4,}gw$")
         return list(filter(pattern.match, input))
@@ -123,6 +127,7 @@ class InputParser:
         parsed_puzzle["entropic"] = self.parse_entropic(input)
         parsed_puzzle["even_odd"] = self.parse_even_odd(input)
         parsed_puzzle["extra_regions"] = self.parse_extra_regions(input)
+        parsed_puzzle["fortress"] = self.parse_fortress(input)
         parsed_puzzle["german_whispers"] = self.parse_german_whispers(input)
         parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
