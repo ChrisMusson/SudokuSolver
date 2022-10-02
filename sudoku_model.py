@@ -66,21 +66,33 @@ class SudokuModel(Model):
             clue = clue[:-3]
             cells = [(int(clue[2*i]), int(clue[2*i+1]))
                      for i in range(len(clue) // 2)]
-            for i in range(len(cells) - 2):
-                cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
-                cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
-                cell3 = self.sol[cells[i + 2][0] - 1][cells[i + 2][1] - 1]
+
+            if len(cells) == 2:
+                cell1 = self.sol[cells[0][0] - 1][cells[0][1] - 1]
+                cell2 = self.sol[cells[1][0] - 1][cells[1][1] - 1]
 
                 self += xsum(x[k] for k in [0, 1, 2]
-                             for x in [cell1, cell2, cell3]) == 1
+                             for x in [cell1, cell2]) <= 1
 
                 self += xsum(x[k] for k in [3, 4, 5]
-                             for x in [cell1, cell2, cell3]) == 1
+                             for x in [cell1, cell2]) <= 1
 
                 self += xsum(x[k] for k in [6, 7, 8]
-                             for x in [cell1, cell2, cell3]) == 1
-                # xsum(cell2[k] for k in [0, 1, 2]) + \
-                # xsum(cell3[k] for k in [0, 1, 2]) == 1
+                             for x in [cell1, cell2]) <= 1
+            else:
+                for i in range(len(cells) - 2):
+                    cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
+                    cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
+                    cell3 = self.sol[cells[i + 2][0] - 1][cells[i + 2][1] - 1]
+
+                    self += xsum(x[k] for k in [0, 1, 2]
+                                 for x in [cell1, cell2, cell3]) == 1
+
+                    self += xsum(x[k] for k in [3, 4, 5]
+                                 for x in [cell1, cell2, cell3]) == 1
+
+                    self += xsum(x[k] for k in [6, 7, 8]
+                                 for x in [cell1, cell2, cell3]) == 1
 
     def add_even_odd_constraints(self) -> None:
         even_odd = self.input["even_odd"]
