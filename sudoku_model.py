@@ -186,6 +186,43 @@ class SudokuModel(Model):
                 for pair in set(all_pairs) - set(poss_b):
                     self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
 
+    def add_modular_lines_constraints(self) -> None:
+        modular_lines = self.input["modular_lines"]
+        if not modular_lines:
+            return
+        for clue in modular_lines:
+            clue = clue[:-2]
+            cells = [(int(clue[2*i]), int(clue[2*i+1]))
+                     for i in range(len(clue) // 2)]
+
+            if len(cells) == 2:
+                cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
+                cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
+
+                self += xsum(x[k] for k in [0, 3, 6]
+                             for x in [cell1, cell2]) <= 1
+
+                self += xsum(x[k] for k in [1, 4, 7]
+                             for x in [cell1, cell2]) <= 1
+
+                self += xsum(x[k] for k in [2, 5, 8]
+                             for x in [cell1, cell2]) <= 1
+
+            else:
+                for i in range(len(cells) - 2):
+                    cell1 = self.sol[cells[i][0] - 1][cells[i][1] - 1]
+                    cell2 = self.sol[cells[i + 1][0] - 1][cells[i + 1][1] - 1]
+                    cell3 = self.sol[cells[i + 2][0] - 1][cells[i + 2][1] - 1]
+
+                    self += xsum(x[k] for k in [0, 3, 6]
+                                 for x in [cell1, cell2, cell3]) == 1
+
+                    self += xsum(x[k] for k in [1, 4, 7]
+                                 for x in [cell1, cell2, cell3]) == 1
+
+                    self += xsum(x[k] for k in [2, 5, 8]
+                                 for x in [cell1, cell2, cell3]) == 1
+
     def add_palindrome_constraints(self) -> None:
         palindrome = self.input["palindrome"]
         if not palindrome:
@@ -462,6 +499,7 @@ class SudokuModel(Model):
         self.add_german_whispers_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
+        self.add_modular_lines_constraints()
         self.add_palindrome_constraints()
         self.add_quadruple_constraints()
         self.add_region_sum_line_constraints()
