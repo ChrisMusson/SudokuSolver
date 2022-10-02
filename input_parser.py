@@ -23,6 +23,10 @@ class InputParser:
         pattern = re.compile("^\d{4,}a$")
         return list(filter(pattern.match, input))
 
+    def parse_clone(self, input: list[str]) -> list[str]:
+        pattern = re.compile("^\d{2,}clone\d{2,}$")
+        return list(filter(pattern.match, input))
+
     def parse_entropic(self, input: list[str]) -> list[str]:
         pattern = re.compile("^\d{4,}ent$")
         return list(filter(pattern.match, input))
@@ -115,6 +119,7 @@ class InputParser:
 
         parsed_puzzle["givens"] = self.parse_givens(input)
         parsed_puzzle["arrow"] = self.parse_arrow(input)
+        parsed_puzzle["clone"] = self.parse_clone(input)
         parsed_puzzle["entropic"] = self.parse_entropic(input)
         parsed_puzzle["even_odd"] = self.parse_even_odd(input)
         parsed_puzzle["extra_regions"] = self.parse_extra_regions(input)

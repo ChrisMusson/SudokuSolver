@@ -58,6 +58,22 @@ class SudokuModel(Model):
             self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k] for x in others) for k in range(
                 9)) == xsum((k+1) * self.sol[circle[0] - 1][circle[1] - 1][k] for k in range(9))
 
+    def add_clone_constraints(self) -> None:
+        clone = self.input["clone"]
+        if not clone:
+            return
+        for clue in clone:
+            r1, r2 = clue.split("clone")
+            cells1 = [(int(r1[2*i]), int(r1[2*i+1]))
+                      for i in range(len(r1) // 2)]
+            cells2 = [(int(r2[2*i]), int(r2[2*i+1]))
+                      for i in range(len(r2) // 2)]
+            for i in range(len(cells1)):
+                c1 = self.sol[cells1[i][0] - 1][cells1[i][1] - 1]
+                c2 = self.sol[cells2[i][0] - 1][cells2[i][1] - 1]
+                for k in range(9):
+                    self += c1[k] == c2[k]
+
     def add_entropic_constraints(self) -> None:
         entropic = self.input["entropic"]
         if not entropic:
@@ -518,6 +534,7 @@ class SudokuModel(Model):
         self.add_standard_constraints()
         self.add_given_constraints()
         self.add_arrow_constraints()
+        self.add_clone_constraints()
         self.add_entropic_constraints()
         self.add_even_odd_constraints()
         self.add_extra_regions_constraints()
