@@ -198,6 +198,19 @@ class SudokuModel(Model):
                 for pair in set(all_pairs) - set(poss_b):
                     self += cell1[pair[0] - 1] + cell2[pair[1] - 1] <= 1
 
+    def add_little_killer_constraints(self) -> None:
+        little_killer = self.input["little_killer"]
+        if not little_killer:
+            return
+
+        for clue in little_killer:
+            region, s = clue.split("lk")
+            region_cells = [(int(region[2*i]), int(region[2*i+1]))
+                            for i in range(len(region) // 2)]
+
+            self += xsum(xsum((k + 1) * self.sol[x[0] - 1][x[1] - 1][k]
+                              for x in region_cells) for k in range(9)) == int(s)
+
     def add_modular_lines_constraints(self) -> None:
         modular_lines = self.input["modular_lines"]
         if not modular_lines:
@@ -511,6 +524,7 @@ class SudokuModel(Model):
         self.add_german_whispers_constraints()
         self.add_killer_constraints()
         self.add_kropki_constraints()
+        self.add_little_killer_constraints()
         self.add_modular_lines_constraints()
         self.add_palindrome_constraints()
         self.add_quadruple_constraints()

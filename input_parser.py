@@ -47,6 +47,10 @@ class InputParser:
         pattern = re.compile("^\d{4}[bw]$")
         return list(filter(pattern.match, input))
 
+    def parse_little_killer(self, input: list[str]) -> list[str]:
+        pattern = re.compile("^\d{2,}lk\d{1,3}$")
+        return list(filter(pattern.match, input))
+
     def parse_modular_lines(self, input: list[str]) -> list[str]:
         pattern = re.compile("^\d{4,}ml$")
         return list(filter(pattern.match, input))
@@ -117,6 +121,7 @@ class InputParser:
         parsed_puzzle["german_whispers"] = self.parse_german_whispers(input)
         parsed_puzzle["killer"] = self.parse_killer(input)
         parsed_puzzle["kropki"] = self.parse_kropki(input)
+        parsed_puzzle["little_killer"] = self.parse_little_killer(input)
         parsed_puzzle["modular_lines"] = self.parse_modular_lines(input)
         parsed_puzzle["palindrome"] = self.parse_palindrome(input)
         parsed_puzzle["quadruple"] = self.parse_quadruple(input)
